@@ -43,9 +43,9 @@ Metrics will be collected using a hybrid push/pull model, with both methods bein
 In both cases, the act of reporting metrics to OpenShift is as simple as writing them to `STDOUT` using the metrics message format defined below. If cartridge and application developers write their metrics to `STDOUT`, those metrics will be captured by OpenShift and either written to Syslog or to log files in $OPENSHIFT_DATA_DIR/logs, depending on the OpenShift environment's configuration (see the [Logging PEP](https://github.com/openshift/openshift-pep/blob/master/openshift-pep-009-logging.md) for more details).
 
 #### Pulling metrics
-A node-level service, `oo-gather-metrics`, is responsible for scheduling the pull-based metrics available per gear. The daemon will also be responsible for reporting statistics about the metrics gathering process, such as the time taken to gather metrics.
+A watchman plugin, `metric_plugin.rb`, is responsible for scheduling the pull-based gear metrics available per gear. The plugin will also be responsible for reporting statistics about the metrics gathering process, such as time taken to run the metrics.
 
-`oo-gather-metrics` will query each gear for metrics at a configurable interval. During each iteration, it will perform the following tasks:
+`metric_plugin.rb` will query each gear for metrics at a configurable interval. During each iteration, it will perform the following tasks:
 
 - collect metrics common to all gears such as cgroups information
 - execute `bin/control metrics` for each cartridge whose manifest indicates the cartridge supports metrics
@@ -96,9 +96,11 @@ OpenShift may support multiple metrics per line (this is still TBD), such as:
 
 	type=metric thread.count=5 thread.active=2 heap.permgen.size=25000000
 
-
 ### Metrics Aggregation
-Assuming OpenShift is configured to send gear log messages to Syslog, all metrics for all gears on a given node will be processed by that node's Syslog service. It will be up to the system administrator to configure Syslog appropriately to forward metrics messages to the appropriate service(s) (such as graphite, statsd, elasticsearch).
+Assuming OpenShift is configured to send gear log messages to Syslog, all metrics for all gears on a given node will be processed by that node's Syslog service. It will be up to the system administrator to configure Syslog appropriately to forward metrics messages to the appropriate service(s) (such as graphite, statsd, elasticsearch). This configuration consists of two pieces
+
+- `syslog7.conf` The user will have to write rules that seperate the metrics out from other messages
+- `*_plugin.rb` will extend `MetricPlugin` and will define what is done with the metric message (Send to graphite, etc.)
 
 
 Backwards Compatibility
