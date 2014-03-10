@@ -99,7 +99,7 @@ OpenShift may support multiple metrics per line (this is still TBD), such as:
 ### Metrics Aggregation
 Assuming OpenShift is configured to send gear log messages to Syslog, all metrics for all gears on a given node will be processed by that node's Syslog service. It will be up to the system administrator to configure Syslog appropriately to forward metrics messages to the appropriate service(s) (such as graphite, statsd, elasticsearch). This configuration consists of two pieces
 
-- `syslog7.conf` The user will have to write rules that seperate the metrics out from other messages
+- `rsyslog7.conf` The user will have to write rules that seperate the metrics out from other messages
 - `*_plugin.rb` will extend `MetricPlugin` and will define what is done with the metric message (Send to graphite, etc.)
 
 
