@@ -42,13 +42,15 @@ Metrics will be collected using a hybrid push/pull model, with both methods bein
 
 In both cases, the act of reporting metrics to OpenShift is as simple as writing them to `STDOUT` using the metrics message format defined below. If cartridge and application developers write their metrics to `STDOUT`, those metrics will be captured by OpenShift and either written to Syslog or to log files in $OPENSHIFT_DATA_DIR/logs, depending on the OpenShift environment's configuration (see the [Logging PEP](https://github.com/openshift/openshift-pep/blob/master/openshift-pep-009-logging.md) for more details).
 
+If logshifter is not configured to send messages to syslog in the environment, writing metrics to STDOUT is relatively pointless. It will just clutter the log files with metrics messages.
+
 #### Pulling metrics
 A watchman plugin, `metric_plugin.rb`, is responsible for scheduling the pull-based gear metrics available per gear. The plugin will also be responsible for reporting statistics about the metrics gathering process, such as time taken to run the metrics.
 
 `metric_plugin.rb` will query each gear for metrics at a configurable interval. During each iteration, it will perform the following tasks:
 
 - collect metrics common to all gears such as cgroups information
-- execute `bin/control metrics` for each cartridge whose manifest indicates the cartridge supports metrics
+- execute `bin/metrics` for each cartridge whose manifest indicates the cartridge supports metrics
 - execute the application's `metrics` action hook (if preset) to allow the application to report its metrics
 
 Metrics reported via `bin/control metrics` and the `metrics` action hook must be printed to `STDOUT`, as OpenShift will handle delivering the metrics to the appropriate destination (Syslog or log files).
