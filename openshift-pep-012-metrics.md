@@ -31,7 +31,7 @@ OpenShift is a complex system comprised of many independent components that, whe
 - Cartridge metrics
 	- HAProxy statistics
 	- Apache statistics
-	- JVM data (thread count, heap memoory information)
+	- JVM data (thread count, heap memory information)
 - Applicaition metrics
 	- specific to each application
 
@@ -59,7 +59,7 @@ Because an OpenShift node may have dozens or hundreds of gears, it is imperative
 
 
 #### Pushing metrics
-A cartridge or application author can opt to schedule metrics reporting on their own, instead of relying on `oo-gather-metrics` to do so. 
+A cartridge or application author can opt to schedule metrics reporting on their own, instead of relying on `metric_plugin.rb` to do so. 
 
 Metrics must be printed to `STDOUT` and OpenShift will handle delivering them to the appropriate destination (Syslog or log files).
 
